@@ -17,7 +17,7 @@ export default function Signup({stat}){
         e.preventDefault()
         axios.post(`${baseUrl}user/signup`,formData)
         .then(res=>{
-            alert(res.data.payload.message)
+            // alert(res.data.payload.message)
             setFormData({
                 username:"",
                 email:""

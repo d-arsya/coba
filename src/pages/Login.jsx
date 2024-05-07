@@ -12,7 +12,6 @@ export default function Login({stat}){
         e.preventDefault()
         axios.post(`${baseUrl}user/login`,formData)
         .then(res=>{
-            alert(res.data.payload.message)
             setFormData({
                 username:""
             })
@@ -27,6 +26,10 @@ export default function Login({stat}){
                 }
             }else if(res.response.data.payload.statusCode==400){
                 alert(res.response.data.payload.message)
+            }else{
+                localStorage.setItem("username",formData.username)
+                alert(res.response.data.payload.message)
+                stat[1]({...stat[0],token:true,login:false})
             }
             setFormData({
                 username:""

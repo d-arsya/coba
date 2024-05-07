@@ -13,7 +13,6 @@ export default function Token({stat}){
         e.preventDefault()
         axios.post(`${baseUrl}token`,formData)
         .then(res=>{
-            alert(res.data.payload.message)
             setFormData({
                 username:window.localStorage.getItem("username"),
                 token:""
@@ -31,12 +30,13 @@ export default function Token({stat}){
         })
     }
     return(
-        <div className="container w-75">
+        <div className="container">
             <h1 className="my-3">KALKULATOR PAKAN</h1>
             <form method="post" onSubmit={(e)=>onSubmit(e)} onChange={(e)=>onChange(e)}>
                 <input required className="form-control mb-3" type="text" value={formData.username} name="username" id="username" placeholder="Username" />
                 <input required className="form-control" type="text" value={formData.token} name="token" id="token" placeholder="Token" />
                 <input className="btn btn-primary my-3" type="submit" value="Verifikasi" />
+                <a className="mx-3 btn btn-success" href={`https://wa.me/6289636055420?text=Permisi, saya ingin meminta token verifikasi untuk akun${formData.username}`}>Admin</a>
             </form>
         </div>
     )
