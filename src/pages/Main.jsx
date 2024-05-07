@@ -1,6 +1,8 @@
 import { useState,useEffect } from 'react'
 import Ternak from '../components/Ternak'
 import Bahan from "../components/Bahan"
+import baseUrl from '../assets/baseUrl.js'
+import axios from 'axios'
 function Main(){
     const [ternak,setTernak] = useState({
         id: "",
@@ -17,25 +19,19 @@ function Main(){
       const [dataTernak,setDataTernak] = useState(false)
       const [dataBahan,setDataBahan] = useState(false)
       useEffect(()=>{  
-        let tmp = localStorage.getItem("dataTernak")
-        if(tmp){
-          setDataTernak(JSON.parse(localStorage.getItem("dataTernak")))
-          setDataBahan(JSON.parse(localStorage.getItem("dataBahan")))
-        }else{
-          fetch("https://script.google.com/macros/s/AKfycbwgcwSOROmoKE26pyN3YkBAS2_MpaM2zC_ySZc8z0lo9_0HZXx_bJMZTFULsKVAydNiCg/exec?nama=Ternak")
-          .then(res=>res.json())
+        // localStorage.clear()
+          axios.get(`${baseUrl}ternak`)
           .then(res=>{
-            setDataTernak(res.data)
-            localStorage.setItem("dataTernak",JSON.stringify(res.data))
+            setDataTernak(res.data.payload.datas)
+            localStorage.setItem("dataTernak",JSON.stringify(res.data.payload.datas))
         })
-          fetch("https://script.google.com/macros/s/AKfycbwgcwSOROmoKE26pyN3YkBAS2_MpaM2zC_ySZc8z0lo9_0HZXx_bJMZTFULsKVAydNiCg/exec?nama=Bahan")
-          .then(res=>res.json())
+          axios.get(`${baseUrl}bahan`)
           .then(res=>{
-            setDataBahan(res.data)
-            localStorage.setItem("dataBahan",JSON.stringify(res.data))
+            setDataBahan(res.data.payload.datas)
+            localStorage.setItem("dataBahan",JSON.stringify(res.data.payload.datas))
           })
 
-        }
+        
       },[])
     
       if(dataBahan&&dataTernak){

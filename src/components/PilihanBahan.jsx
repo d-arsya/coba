@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalBahan from "./ModalBahan"
+import ModalBahan from "./ModalBahan";
 export default function PilihanBahan({
   dataBahan,
   onBahan,
@@ -7,10 +7,8 @@ export default function PilihanBahan({
   setJumlahBahan,
   bahanUse,
   setBahanUse,
+  onModal
 }) {
-  function onDetail(e){
-    console.log(bahanUse[e])
-  }
   return (
     <div>
       <h5 className="my-3 text-center">Pemilihan Bahan</h5>
@@ -40,7 +38,7 @@ export default function PilihanBahan({
               
               <tr key={i}>
                 <td className="d-flex nowrap align-items-center">
-                  <ModalBahan key={i} data={bahanUse[i]}></ModalBahan>
+                  <ModalBahan key={Math.random() * (100 - 1) + 1} data={bahanUse[i]}></ModalBahan>
                   <select
                     key={i}
                     onChange={(e) => {
