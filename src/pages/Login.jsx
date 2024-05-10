@@ -22,7 +22,7 @@ export default function Login({stat}){
             if(res.response.data.payload.statusCode==401){
                 const halo = confirm(`${res.response.data.payload.message}, apakah ingin mengganti perangkat ?`)
                 if(halo){
-                    axios.put(`${baseUrl}/token`,{username:formData.username})
+                    axios.post(`${baseUrl}/device`,{username:formData.username})
                 }
             }else if(res.response.data.payload.statusCode==400){
                 alert(res.response.data.payload.message)
