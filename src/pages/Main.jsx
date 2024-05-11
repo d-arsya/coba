@@ -2,7 +2,6 @@ import { useState,useEffect } from 'react'
 import Ternak from '../components/Ternak'
 import Bahan from "../components/Bahan"
 import baseUrl from '../assets/baseUrl.js'
-import axios from 'axios'
 function Main(){
     const [ternak,setTernak] = useState({
         id: "",
@@ -19,17 +18,19 @@ function Main(){
       const [dataTernak,setDataTernak] = useState(false)
       const [dataBahan,setDataBahan] = useState(false)
       useEffect(()=>{  
-        // localStorage.clear()
-          axios.get(`${baseUrl}ternak`)
+        localStorage.clear()
+        fetch(`${baseUrl}ternak`)
+        .then(res=>res.json())
           .then(res=>{
-            setDataTernak(res.data.payload.datas)
-            localStorage.setItem("dataTernak",JSON.stringify(res.data.payload.datas))
+            setDataTernak(res.payload.datas)
+            localStorage.setItem("dataTernak",JSON.stringify(res.payload.datas))
         })
-          axios.get(`${baseUrl}bahan`)
+        fetch(`${baseUrl}bahan`)
+        .then(res=>res.json())
           .then(res=>{
-            setDataBahan(res.data.payload.datas)
-            localStorage.setItem("dataBahan",JSON.stringify(res.data.payload.datas))
-          })
+            setDataBahan(res.payload.datas)
+            localStorage.setItem("dataBahan",JSON.stringify(res.payload.datas))
+        })
 
         
       },[])

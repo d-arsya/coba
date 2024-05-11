@@ -1,5 +1,4 @@
 import baseUrl from "../assets/baseUrl";
-import axios from "axios";
 import { useState } from "react";
 export default function Token({stat}){
     const [formData,setFormData] = useState({
@@ -11,23 +10,28 @@ export default function Token({stat}){
     }
     function onSubmit(e){
         e.preventDefault()
-        axios.post(`${baseUrl}token`,formData)
-        .then(res=>{
-            setFormData({
-                username:window.localStorage.getItem("username"),
-                token:""
-            })
+        const form = new FormData();
+    form.append("username", formData.username);
+    form.append("token", formData.token);
+    fetch(`${baseUrl}token`, {
+      method: "POST",
+      body: form,
+    })
+      .then((res) => res.text())
+      .then((res) => res.slice(res.indexOf("{"), res.length))
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        setFormData({
+          username: window.localStorage.getItem("username"),
+          token: "",
+        });
+        if (res.payload.statusCode == 200) {
             document.cookie = `username=${window.localStorage.getItem("username")}`
             stat[1]({...stat[0],home:true,token:false})
-        })
-        .catch(res=>{
-            alert(res.response.data.payload.message)
-            setFormData({
-                username:window.localStorage.getItem("username"),
-                token:""
-            })
-
-        })
+        } else {
+          alert(res.payload.message);
+        }
+      });
     }
     return(
         <div className="container">

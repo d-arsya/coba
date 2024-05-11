@@ -1,41 +1,57 @@
 import baseUrl from "../assets/baseUrl";
-import axios from "axios";
 import { useState } from "react";
 export default function Login({stat}){
     const [formData,setFormData] = useState({
-        username:"",
+        username:window.localStorage.getItem("username")?window.localStorage.getItem("username"):"",
     })
     function onChange(e){
         setFormData({...formData,[e.target.name]:e.target.value})
     }
     function onSubmit(e){
         e.preventDefault()
-        axios.post(`${baseUrl}user/login`,formData)
-        .then(res=>{
-            setFormData({
-                username:""
-            })
-            stat[1]({...stat[0],home:true,login:false})
-            
+        const form = new FormData();
+        form.append("username", formData.username);
+        fetch(`${baseUrl}user/login`, {
+          method: "POST",
+          body: form,
         })
-        .catch(res=>{
-            if(res.response.data.payload.statusCode==401){
-                const halo = confirm(`${res.response.data.payload.message}, apakah ingin mengganti perangkat ?`)
+          .then((res) => res.text())
+          .then((res) => res.slice(res.indexOf("{"), res.length))
+          .then((res) => JSON.parse(res))
+          .then((res) => {
+            if (res.payload.statusCode == 200) {
+                stat[1]({...stat[0],home:true,login:false})
+            }else if(res.payload.statusCode == 400){
+              alert(res.payload.message);
+            }else if(res.payload.statusCode == 401){
+                const halo = confirm(`${res.payload.message}, apakah ingin mengganti perangkat ?`)
                 if(halo){
-                    axios.post(`${baseUrl}/device`,{username:formData.username})
+                    fetch(`${baseUrl}device`,{
+                        method:"POST",
+                        body:form
+                    })
+                    .then((res) => res.text())
+          .then((res) => res.slice(res.indexOf("{"), res.length))
+          .then((res) => JSON.parse(res))
+                    .then(res=>{
+                        alert(res.payload.message)
+                        if(res.payload.statusCode==200){
+                            window.localStorage.setItem(
+                                "username",
+                                res.payload.datas[0].username
+                              );
+                              stat[1]({ ...stat[0], login: false, token: true });
+                        }
+                    })
                 }
-            }else if(res.response.data.payload.statusCode==400){
-                alert(res.response.data.payload.message)
             }else{
                 localStorage.setItem("username",formData.username)
-                alert(res.response.data.payload.message)
+                alert(res.payload.message)
                 stat[1]({...stat[0],token:true,login:false})
             }
-            setFormData({
-                username:""
-            })
+          });
+            
 
-        })
     }
     function onClick(){
         document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
