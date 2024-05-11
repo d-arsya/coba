@@ -38,7 +38,7 @@ export default function PilihanBahan({
               
               <tr key={i}>
                 <td className="d-flex nowrap align-items-center">
-                  <ModalBahan key={Math.random() * (100 - 1) + 1} data={bahanUse[i]}></ModalBahan>
+                  {/* <ModalBahan key={Math.random()} data={bahanUse[i]}></ModalBahan> */}
                   <select
                     key={i}
                     onChange={(e) => {
